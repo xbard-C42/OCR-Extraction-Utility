@@ -1,0 +1,52 @@
+{
+  "name": "ocr-extraction-utility",
+  "version": "1.0.0",
+  "description": "A utility for extracting text from structured OCR JSON data into readable plain-text files",
+  "main": "extractOcrText.js",
+  "bin": {
+    "extract-ocr": "./extractOcrText.js"
+  },
+  "scripts": {
+    "build": "tsc extractOcrText.ts",
+    "start": "node extractOcrText.js",
+    "test": "echo \"No tests specified yet\" && exit 0",
+    "lint": "eslint extractOcrText.ts",
+    "format": "prettier --write extractOcrText.ts"
+  },
+  "keywords": [
+    "ocr",
+    "text-extraction",
+    "pdf",
+    "document-processing",
+    "cli",
+    "typescript",
+    "python"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/ocr-extraction-utility.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/ocr-extraction-utility/issues"
+  },
+  "homepage": "https://github.com/your-username/ocr-extraction-utility#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "files": [
+    "extractOcrText.js",
+    "extractOcrText.ts",
+    "extract_ocr_text.py",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+}

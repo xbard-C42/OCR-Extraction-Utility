@@ -1,0 +1,26 @@
+{
+  "sample-document.pdf": [
+    {
+      "page": 1,
+      "text": "This is the first page of a sample document.\n\nIt contains some example text that demonstrates how OCR data is structured and how this utility processes it into readable plain-text files.\n\nThe text maintains its original formatting and line breaks."
+    },
+    {
+      "page": 2,
+      "text": "This is the second page of the document.\n\nEach page is processed separately and will be clearly marked with page delimiters in the output file.\n\nThis makes it easy to navigate through the extracted content."
+    },
+    {
+      "page": 3,
+      "text": "Final page of the sample document.\n\nThe utility handles multiple documents in a single JSON file, sorts pages correctly, and outputs everything with proper UTF-8 encoding.\n\nEnd of document."
+    }
+  ],
+  "another-document.pdf": [
+    {
+      "page": 1,
+      "text": "This is a second document to demonstrate processing multiple files.\n\nEach document gets its own output text file based on the original filename."
+    },
+    {
+      "page": 2,
+      "text": "Second page of the second document.\n\nThe utility is designed to handle batch processing of OCR results efficiently."
+    }
+  ]
+}
