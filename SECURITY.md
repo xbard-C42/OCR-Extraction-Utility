@@ -4,7 +4,7 @@ Security Policy
 
 Reporting a Vulnerability
 
-If you discover a security vulnerability in this project, please report it as soon as possible by emailing [security@example.com] with details.
+If you discover a security vulnerability in this project, please report it as soon as possible by emailing [security@42.community] with details.
 
 We aim to acknowledge your report within 48 hours and provide a fix or mitigation strategy as quickly as we can.
 
