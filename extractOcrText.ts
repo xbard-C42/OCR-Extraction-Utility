@@ -1,68 +1,97 @@
-# Contributing to OCR Extraction Utility
+#!/usr/bin/env node
+import * as fs from 'fs';
+import * as path from 'path';
 
-Thank you for your interest in contributing! We welcome contributions of all kinds, including bug reports, feature requests, documentation improvements, and code enhancements.
+/**
+ * TypeScript equivalent of extract_ocr_text.py:
+ * Loads an OCR JSON file and writes plain-text files for each document,
+ * with page delimiters, into the specified output directory.
+ * 
+ * Expected input JSON structure:
+ * {
+ *   "filename.pdf": [
+ *     {"page": 1, "text": "..."},
+ *     {"page": 2, "text": "..."},
+ *     ...
+ *   ],
+ *   ...
+ * }
+ */
 
-## How to Contribute
+interface OcrPage {
+  page: number;
+  text: string;
+}
 
-1. **Fork the Repository**
-   - Click the **Fork** button in the top right of the repository page.
-   - Clone your fork locally:
-     ```bash
-     git clone https://github.com/your-username/ocr-extraction-utility.git
-     ```
+interface OcrData {
+  [filename: string]: OcrPage[];
+}
 
-2. **Create a Branch**
-   - Create a descriptive branch name:
-     ```bash
-     git checkout -b feature/your-feature-name
-     ```
+function extractText(ocrJsonPath: string, outputDir: string): void {
+  try {
+    // Load OCR data from JSON
+    const rawData = fs.readFileSync(ocrJsonPath, 'utf-8');
+    const ocrData: OcrData = JSON.parse(rawData);
 
-3. **Make Changes**
-   - Follow the existing code style and conventions.
-   - Write clear, concise commit messages.
+    // Ensure output directory exists
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
 
-4. **Write Tests**
-   - Add or update tests to cover your changes.
-   - Ensure all tests pass:
-     ```bash
-     npm test
-     ```
+    for (const [filename, pages] of Object.entries(ocrData)) {
+      const baseName = path.basename(filename, path.extname(filename));
+      const outputPath = path.join(outputDir, `${baseName}.txt`);
 
-5. **Submit a Pull Request**
-   - Push your branch to your fork:
-     ```bash
-     git push origin feature/your-feature-name
-     ```
-   - Open a pull request against the **main** branch of this repository.
-   - Fill out the PR template with a description of your changes.
+      // Sort pages by page number
+      const pagesSorted = pages.sort((a, b) => (a.page || 0) - (b.page || 0));
 
-## Coding Standards
+      let content = '';
+      for (const page of pagesSorted) {
+        const pageNum = page.page;
+        const text = page.text || '';
+        content += `--- Page ${pageNum} ---\n`;
+        content += text + '\n\n';
+      }
 
-- Follow [TypeScript Style Guide](https://github.com/microsoft/TypeScript/blob/main/doc/styleguide/README.md).
-- Use **`tslint`** or **`eslint`** rules configured in the repo.
-- Keep functions small and focused.
-- Document complex logic with comments.
+      fs.writeFileSync(outputPath, content, 'utf-8');
+      console.log(`Extracted text for ${filename} ➜ ${outputPath}`);
+    }
+  } catch (error) {
+    console.error('Error processing OCR data:', error);
+    process.exit(1);
+  }
+}
 
-## Code Review Process
+function main(): void {
+  const args = process.argv.slice(2);
+  
+  let inputPath = 'ocrData.json';
+  let outputDir = 'output';
 
-- Pull requests should include a clear description of the problem and solution.
-- Reviewers will provide feedback or request changes.
-- Address feedback promptly and respectfully.
+  // Simple argument parsing
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '-i' || args[i] === '--input') {
+      inputPath = args[i + 1];
+      i++;
+    } else if (args[i] === '-o' || args[i] === '--output') {
+      outputDir = args[i + 1];
+      i++;
+    } else if (args[i] === '-h' || args[i] === '--help') {
+      console.log(`
+Usage: node extractOcrText.js [options]
 
-## Reporting Issues
+Options:
+  -i, --input   Path to OCR JSON file (default: ocrData.json)
+  -o, --output  Directory to write extracted text files (default: output)
+  -h, --help    Show this help message
+`);
+      process.exit(0);
+    }
+  }
 
-If you find a bug or have a feature request:
+  extractText(inputPath, outputDir);
+}
 
-1. Check existing [issues](https://github.com/your-username/ocr-extraction-utility/issues) to avoid duplicates.
-2. Open a new issue with:
-   - A concise title.
-   - Steps to reproduce (for bugs).
-   - Expected vs. actual behavior.
-
-## Contributor License Agreement (CLA)
-
-By contributing, you agree that your contributions will be licensed under the project's MIT License.
-
----
-
-We appreciate your contributions and look forward to collaborating with you!
+if (require.main === module) {
+  main();
+}
